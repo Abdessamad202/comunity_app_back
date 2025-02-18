@@ -52,35 +52,6 @@ class Authentication extends Controller implements HasMiddleware
         ]);
     }
     // resend the code to validate the email
-    public function resendVerificationEmailCode(User $user)
-    {
-        // $phase = $user->load('forgetPasswordProcess')->phase;
-        if ($user->id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
-        }
-        // if ($phase !== 1) {
-        //     return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
-        // }
-
-        $code = $this->generateCode();
-        $this->storeCode($user->id, $code, $user->email, ForgetPasswordMail::class, ForgetPasswordProcess::class);
-        return response()->json(['success' => true, 'message' => 'Verification code resent successfully'], 200);
-    }
-    public function resendConfirmationEmailCode(User $user)
-    {
-        if ($user->id !== Auth::id()) {
-            return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
-        }
-        if ($user->step !== 1) {
-            return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
-        }
-
-        $code = $this->generateCode();
-        $this->storeCode($user->id, $code, $user->email, SendVerificationCode::class, Verification::class);
-        return response()->json(['success' => true, 'message' => 'Verification code resent successfully'], 200);
-    }
-
-    // Step 2: Verify the user's email using the code
     public function registerStep2(CheckCodeRequest $request, User $user)
     {
         if ($user->id !== Auth::id()) {
@@ -110,6 +81,22 @@ class Authentication extends Controller implements HasMiddleware
             ]
         ], 400);
     }
+
+    public function resendConfirmationEmailCode(User $user)
+    {
+        if ($user->id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
+        }
+        if ($user->step !== 1) {
+            return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
+        }
+
+        $code = $this->generateCode();
+        $this->storeCode($user->id, $code, $user->email, SendVerificationCode::class, Verification::class);
+        return response()->json(['success' => true, 'message' => 'Verification code resent successfully'], 200);
+    }
+
+    // Step 2: Verify the user's email using the code
     public function registerStep3(ProfileRegistrationRequest $request, User $user)
     {
         if ($user->id !== Auth::id()) {
@@ -140,6 +127,7 @@ class Authentication extends Controller implements HasMiddleware
                     'success' => true,
                     'message' => 'Login successful',
                     'user' => [
+                        'id' => $user->id,
                         'token' => $token,
                         'profileId' => $user->profile?->id, // Prevents error if profile is null
                     ]
@@ -175,6 +163,20 @@ class Authentication extends Controller implements HasMiddleware
             'token' => $user->createToken('authToken')->plainTextToken,
             'phase' => $user->forgetPasswordProcess->phase
         ]], 200);
+    }
+    public function resendVerificationEmailCode(User $user)
+    {
+        // $phase = $user->load('forgetPasswordProcess')->phase;
+        if ($user->id !== Auth::id()) {
+            return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
+        }
+        // if ($phase !== 1) {
+        //     return response()->json(['success' => false, 'message' => 'You cannot resend the verification code at this step'], 400);
+        // }
+
+        $code = $this->generateCode();
+        $this->storeCode($user->id, $code, $user->email, ForgetPasswordMail::class, ForgetPasswordProcess::class);
+        return response()->json(['success' => true, 'message' => 'Verification code resent successfully'], 200);
     }
     public function checkCode(CheckCodeRequest $request, User $user)
     {
