@@ -16,8 +16,15 @@ class CommentFactory extends Factory
      */
     public function definition(): array
     {
+        $created_at = fake()->dateTimeBetween('-2 years', 'now')->format('Y-m-d H:i:s');
+
         return [
+            'post_id'=> fake()->numberBetween(1,200),
+            'profile_id'=> fake()->numberBetween(1,200),
             //
+            'content' => fake()->paragraph(),
+            'created_at' => $created_at,
+            'updated_at'=> $created_at
         ];
     }
 }
