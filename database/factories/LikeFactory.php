@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,14 @@ class LikeFactory extends Factory
      */
     public function definition(): array
     {
+        $created_at = fake()->dateTimeBetween('-2 years', 'now')->format('Y-m-d H:i:s');
+
         return [
-            //
+            // before the creation of the user and the post
+            'profile_id' => User::inRandomOrder()->first()->id,
+            'post_id' => Post::inRandomOrder()->first()->id,
+            'created_at' => $created_at,
+            'updated_at'=> $created_at
         ];
     }
 }
