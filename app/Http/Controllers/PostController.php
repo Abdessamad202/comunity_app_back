@@ -13,6 +13,13 @@ class PostController extends Controller
     public function index()
     {
         //
+        // $posts = Post::paginate(5);
+        // return  Post::all();
+        $posts = Post::with('comments', 'likes','profile')->orderBy('created_at', 'desc')->paginate(5);
+        return response()->json([
+            'posts' => $posts->items(),
+            'nextPage' => $posts->nextPageUrl() // الرابط ديال الصفحة الجاية
+        ]);
     }
 
     /**
