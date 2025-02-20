@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\ProfileController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\Api\Guest\Authentication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,8 +13,9 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Profile Routes
-    Route::get('/profile/{profile}', [ProfileController::class, 'show']);
 });
+Route::get('/profile/{profile}', [ProfileController::class, 'show']);
+Route::get('/posts', [PostController::class, 'index']);
 
 // Guest Routes (no authentication required)
 Route::prefix('register')->group(function () {
