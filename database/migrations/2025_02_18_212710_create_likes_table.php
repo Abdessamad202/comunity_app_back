@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('likes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            // $table->id();
+            $table->foreignId('profile_id')->constrained()->onDelete('cascade');
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
-            $table->primary(['user_id', 'post_id']);
-            $table->timestamps();
+            $table->primary(['profile_id', 'post_id']);
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 
