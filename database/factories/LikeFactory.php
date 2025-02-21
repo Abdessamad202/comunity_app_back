@@ -22,7 +22,7 @@ class LikeFactory extends Factory
 
         return [
             // before the creation of the user and the post
-            'profile_id' => User::inRandomOrder()->first()->id,
+            'user_id' => User::inRandomOrder()->first()->id,
             'post_id' => Post::inRandomOrder()->first()->id,
             'created_at' => $created_at,
             'updated_at'=> $created_at
