@@ -46,7 +46,6 @@ class Authentication extends Controller implements HasMiddleware
                 'id' => $user->id,
                 'step' => $user->step,
                 'token' => $user->createToken('authToken')->plainTextToken
-
             ],
             'message' => 'Verification code sent successfully',
         ]);
