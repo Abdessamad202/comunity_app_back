@@ -32,9 +32,6 @@ class User extends Authenticatable
     public function forgetPasswordProcess(){
         return $this->hasOne(ForgetPasswordProcess::class);
     }
-    public function posts(){
-        return $this->hasMany(Post::class);
-    }
     public function likes(){
         return $this->hasMany(Like::class);
     }
