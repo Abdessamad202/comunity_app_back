@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\Auth\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Api\Guest\Authentication;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +16,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Profile Routes
 });
-Route::get('/profile/{profile}', [ProfileController::class, 'show']);
 Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts/{post}/comments', [CommentController::class, 'showComments']);
 
 // Guest Routes (no authentication required)
 Route::prefix('register')->group(function () {
@@ -31,3 +33,11 @@ Route::post('/check-code/{user}', [Authentication::class, 'checkCode']);
 Route::post('/verify/resend-code/{user}', [Authentication::class, 'resendVerificationEmailCode']);
 Route::post('/change-password/{user}', [Authentication::class, 'changePassword']);
 Route::post('/logout', [Authentication::class, 'logout']);
+
+
+Route::get('/user/{user}', [UserController::class, 'show']);
+
+Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+Route::post('/posts/{post}/like', [LikeController::class, 'likePost']);
+Route::delete('/posts/{post}/unlike', [LikeController::class, 'unLikePost']);
+// DELETE /api/posts/{id}/like
