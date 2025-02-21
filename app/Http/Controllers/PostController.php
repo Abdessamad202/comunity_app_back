@@ -4,24 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
-class PostController extends Controller
+class PostController extends Controller implements HasMiddleware
 {
+    public static function middleware(){
+        return [new Middleware('auth:sanctum')];
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        // $posts = Post::paginate(5);
-        // return  Post::all();
-        $posts = Post::with('comments', 'likes','profile')->orderBy('created_at', 'desc')->paginate(5);
+        $userId = Auth::id(); // جلب ID ديال المستخدم الحالي
+
+        $posts = Post::with('user.profile')
+            ->withCount(['comments', 'likes'])
+            ->withExists(['likes as liked' => function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            }]) // كيضيف liked: true/false
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
         return response()->json([
             'posts' => $posts->items(),
-            'nextPage' => $posts->nextPageUrl() // الرابط ديال الصفحة الجاية
+            'nextPage' => $posts->nextPageUrl(),
         ]);
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -35,7 +45,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+
+        return $post->load('user.profile', 'comments.user.profile');
     }
 
     /**
