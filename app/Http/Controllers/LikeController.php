@@ -1,49 +1,39 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Like;
+use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
-class LikeController extends Controller
+class LikeController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public static function middleware()
     {
-        //
+        return [new Middleware('auth:sanctum')];
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Like a post.
      */
-    public function store(Request $request)
+    public function likePost(Post $post)
     {
-        //
+        Like::firstOrCreate([
+            'user_id' => Auth::user()->id, // Ensure correct column
+            'post_id' => $post->id,
+        ]);
+
+        return response()->json(['message' => 'Post liked!']);
     }
 
     /**
-     * Display the specified resource.
+     * Unlike a post.
      */
-    public function show(Like $like)
+    public function unLikePost(Post $post)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Like $like)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Like $like)
-    {
-        //
+        $post->likes()->where('user_id', Auth::id())->delete();
+        return response()->json(['message' => 'Like removed.']);
     }
 }
