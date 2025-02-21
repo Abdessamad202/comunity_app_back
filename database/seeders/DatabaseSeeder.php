@@ -21,18 +21,12 @@ class DatabaseSeeder extends Seeder
     //         'picture' => 'http://127.0.0.1:8000/imgs/pic'.$id.'.jpg'
     //     ]);
     // }
-    protected function updatePicture(int $id,string $str): string
-    {
-        if ($str == 'posts') {
-            return 'http://127.0.0.1:8000/imgs/posts/pic' . $id % 5 + 1 . '.jpg';
-            # code...
-        }
-        return 'http://127.0.0.1:8000/imgs/' . $str . '/pic' . $id % 2 + 1 . '.jpg';
-    }
     public function run(): void
     {
-        User::factory(200)->create();
-        $users = User::all();  //Retrieve all users
+        User::factory(250)->create();
+        $users = User::all();
+        // $users = User::whereBetween('id', [201, 204])->get();  //Retrieve all users
+
         foreach ($users as $user) {
             Profile::factory(1)->create([
                 'user_id' => $user->id,
@@ -41,31 +35,32 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $user->updated_at
             ]);
         }
-        $profiles = Profile::all();
-        foreach ($profiles as $profile) {
-            Post::factory(4)->create([
-                'profile_id' => $profile->id,
-                'picture' => 'http://127.0.0.1:8000/imgs/posts/pic' . (($profile->id % 4) + 1) . '.jpg',
-            ]);
+        // $profiles = Profile::all();
+        foreach ($users as $user) {
+            for($i = 1;$i<=5;$i++){
+                Post::factory()->create([
+                    'user_id' => $user->id,
+                    'picture' => 'http://127.0.0.1:8000/imgs/posts/pic' . $i. '.jpg',
+                ]);
+            }
         }
 
         $posts = Post::all();
         foreach ($posts as $post) {
-            $selectedProfiles = $profiles->random(50); // Randomly select a user
-            foreach ($selectedProfiles as $profile) {
+            $selectedUsers = $users->random(50); // Randomly select a user
+            foreach ($selectedUsers as $user) {
                 Like::factory()->create([
                     'post_id' => $post->id,
-                    'profile_id' => $profile->id
+                    'user_id' => $user->id
                 ]);
             }
-            $selectedProfiles2 = $profiles->random(30); // Randomly select a user
-            foreach ($selectedProfiles2 as $profile) {
+            $selectedUsers2 = $users->random(30); // Randomly select a user
+            foreach ($selectedUsers2 as $user) {
                 Comment::factory()->create([
                     'post_id' => $post->id,
-                    'profile_id' => $profile->id
+                    'user_id' => $user->id
                 ]);
             }
         }
-
-        }
+    }
 }
