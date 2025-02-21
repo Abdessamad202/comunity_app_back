@@ -23,7 +23,7 @@ class ProfileRegistrationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'sex' => 'required|in:M,F',
+            'gender' => 'required|in:M,F',
             // more than 18 years
             'date_of_birth' => 'required|date|before_or_equal:18years',
         ];
