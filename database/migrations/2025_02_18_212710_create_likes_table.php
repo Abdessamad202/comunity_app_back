@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('likes', function (Blueprint $table) {
             // $table->id();
-            $table->foreignId('profile_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('post_id')->constrained()->onDelete('cascade');
-            $table->primary(['profile_id', 'post_id']);
+            $table->primary(['user_id', 'post_id']);
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
         });
