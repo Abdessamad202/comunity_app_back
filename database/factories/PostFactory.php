@@ -16,7 +16,7 @@ class PostFactory extends Factory
         $createdAt = $this->faker->dateTimeBetween($user->created_at, 'now')->format('Y-m-d H:i:s');
 
         return [
-            'profile_id' => $user->id,
+            'user_id' => $user->id,
             'content' => $this->faker->sentence(),
             'picture' => fake()->imageUrl(),
             'created_at' => $createdAt,
