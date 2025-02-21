@@ -9,8 +9,13 @@ class Like extends Model
 {
     //
     use HasFactory;
-    public function profile(){
-        return $this->belongsTo(Profile::class);
+
+    protected $fillable = [
+        'user_id',
+        'post_id'
+    ];
+    public function user(){
+        return $this->belongsTo(User::class);
     }
     public function post(){
         return $this->belongsTo(Post::class);
