@@ -20,7 +20,7 @@ class CommentFactory extends Factory
 
         return [
             'post_id'=> fake()->numberBetween(1,200),
-            'profile_id'=> fake()->numberBetween(1,200),
+            'user_id'=> fake()->numberBetween(1,200),
             //
             'content' => fake()->paragraph(),
             'created_at' => $created_at,
