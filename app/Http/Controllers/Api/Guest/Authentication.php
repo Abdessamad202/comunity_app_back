@@ -126,6 +126,8 @@ class Authentication extends Controller implements HasMiddleware
                     'success' => true,
                     'message' => 'Login successful',
                     'user' => [
+                        'user' => $user,
+                        'profile' => $user->profile,
                         'id' => $user->id,
                         'token' => $token,
                         'profileId' => $user->profile?->id, // Prevents error if profile is null
