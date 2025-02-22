@@ -19,13 +19,15 @@ class PostController extends Controller implements HasMiddleware
     public function index()
     {
         $userId = Auth::id(); // جلب ID ديال المستخدم الحالي
-
-        $posts = Post::with('user.profile')
-            ->withCount(['comments', 'likes'])
+        $posts = Post::with('user.profile','comments.user.profile')
+            ->withCount([ 'likes'])
+            ->with(['comments'=> function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }])
             ->withExists(['likes as liked' => function ($query) use ($userId) {
                 $query->where('user_id', $userId);
-            }]) // كيضيف liked: true/false
-            ->orderBy('created_at', 'desc')
+            }]) //  liked: true/false
+            ->orderBy('created_at', 'asc')
             ->paginate(5);
         return response()->json([
             'posts' => $posts->items(),
